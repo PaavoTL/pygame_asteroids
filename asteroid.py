@@ -7,13 +7,33 @@ from constants import *
 class Asteroid(CircleShape):
   def __init__(self, x, y, radius):
     super().__init__(x, y, radius)
-    pass
+    self.rotation = 0
+    self.rotation_speed = random.uniform(-100,100)
+    self.shape_points = []
+    for i in range (0,18):
+      self.shape_points.append(random.uniform(0, radius/5))
+    
+      
+  def chunky(self):
+    result_points = []
+    segment = 360 / len(self.shape_points)
+    for i in range(0, len(self.shape_points)):
+      point_position = pygame.Vector2(0, self.radius + self.shape_points[i]).rotate(self.rotation + segment * i)
+      result_points.append(self.position + point_position)
+    return result_points
   
   def draw(self, screen):
-    pygame.draw.circle(screen, "white", self.position, self.radius)
+    points = self.chunky()
+    
+    #pygame.draw.circle(screen, "black", self.position, self.radius)
+    #pygame.draw.circle(screen, "white", self.position, self.radius, 2)
+    pygame.draw.polygon(screen, "black", points)
+    pygame.draw.polygon(screen, "white", points, 2)
+    
     
   def update(self, dt):
     self.position += self.velocity * dt
+    self.rotation += self.rotation_speed * dt
     
   def split (self):
     self.kill()
